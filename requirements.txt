@@ -1,0 +1,6 @@
+beautifulsoup4
+requests
+pandas
+fake-useragent
+playwright
+openai==0.28
