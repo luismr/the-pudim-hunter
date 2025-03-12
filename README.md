@@ -1,6 +1,6 @@
 # The Pudim Hunter 🍮
 
-**The Pudim Hunte 🍮r** is a Proof of Concept (PoC) tool designed to automate your job search by scraping job listings from SimplyHired, analyzing them against your resume, and assigning a relevance score. This provides insights into how well each job matches your skills, helping you focus on the most promising opportunities.
+**The Pudim Hunter 🍮** is a Proof of Concept (PoC) tool designed to automate your job search by scraping job listings from SimplyHired, analyzing them against your resume, and assigning a relevance score. This provides insights into how well each job matches your skills, helping you focus on the most promising opportunities.
 
 ## Features
 
