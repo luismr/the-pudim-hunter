@@ -104,8 +104,8 @@ The project is under continuous improvement. Below are some planned enhancements
 ✅ **Better OpenAI Prompting**: Improve the AI prompt to refine the filtering of **remote-only positions**, specifically those that:
 
 👀 Allow candidates to work **fully remote**.
-👀 Allow candidates to search for **open to applicants from Brazil** or **worldwide**.
 
+👀 Allow candidates to search for **open to applicants from Brazil** or **worldwide**.
 
 ✅ **Playwright Headless Mode**: Tune Playwright to **work in headless mode** for faster and more efficient job scraping.
 
