@@ -84,6 +84,28 @@ Then, run the analysis script:
 python job_analyze_scores.py
 ```
 
+#### Set the OpenAI Model (Optional)):
+
+The default model used to perform this analisys is `gpt-4o` but you can change it setting the `OPENAI_API_MODEL` environment variable.
+
+#### Set the OpenAI API Key:
+
+On Linux/macOS:
+```bash
+export OPENAI_API_MODEL="your-model-here"
+```
+
+On Windows (PowerShell):
+```powershell
+$env:OPENAI_API_MODEL="your-model-here"
+```
+
+Then, run the analysis script:
+
+```bash
+python job_analyze_scores.py
+```
+
 This script will compare each job listing with `data/resume.txt` and assign a relevance score.
 
 ### 4. Review the Results  

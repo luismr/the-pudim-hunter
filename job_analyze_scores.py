@@ -10,6 +10,8 @@ install_playwright()
 
 # Load API Key
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Set API key in environment variables
+OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-4o")  # Set Model in environment variables
+
 
 if not OPENAI_API_KEY:
     print("❌ ERROR: OpenAI API key is missing. Set OPENAI_API_KEY environment variable.")
@@ -48,10 +50,10 @@ def fetch_job_description(job_url):
 
 
 def analyze_match_score(job_description, resume):
-    """Uses OpenAI GPT-4o to analyze the job description and compute a match score with justification."""
+    """Uses OpenAI GPT-4o (default) to analyze the job description and compute a match score with justification."""
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4o",
+            model=OPENAI_API_MODEL,
             messages=[
                 {"role": "system", "content": "You are an AI that rates job suitability based on a résumé."},
                 {"role": "user", "content": f"""
