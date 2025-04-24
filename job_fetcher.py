@@ -1,7 +1,7 @@
 import os
 
 from job_storage import save_jobs  
-from pudim_hunter_driver.models import JobQuery, Job
+from pudim_hunter_driver.models import JobQuery
 from pudim_hunter_driver_simply_hired.driver import SimplyHiredScraperJobDriver
 
 # Function to fetch jobs

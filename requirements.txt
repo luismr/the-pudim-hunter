@@ -1,4 +1,4 @@
-pudim-hunter-driver-simply-hired==1.0.0
+pudim-hunter-driver-simply-hired==1.0.1
 beautifulsoup4
 pandas
 openai==0.28
