@@ -1,6 +1,4 @@
+pudim-hunter-driver-simply-hired==1.0.0
 beautifulsoup4
-requests
 pandas
-fake-useragent
-playwright
 openai==0.28

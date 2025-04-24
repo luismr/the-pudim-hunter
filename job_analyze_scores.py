@@ -1,17 +1,13 @@
 import os
 import time
-from job_storage import load_jobs, update_job_score
-from install_playwright import install_playwright
-from playwright.sync_api import sync_playwright
 import openai
 
-# Ensure Playwright is installed
-install_playwright()
+from job_storage import load_jobs
+from analysis_storage import AnalysisStorage
 
 # Load API Key
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Set API key in environment variables
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-4o")  # Set Model in environment variables
-
 
 if not OPENAI_API_KEY:
     print("❌ ERROR: OpenAI API key is missing. Set OPENAI_API_KEY environment variable.")
@@ -30,27 +26,14 @@ if not os.path.exists(RESUME_PATH):
 with open(RESUME_PATH, "r", encoding="utf-8") as file:
     resume_content = file.read().strip()
 
-def fetch_job_description(job_url):
-    """Fetches job description from the main <aside> section of the job page."""
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
-        page = browser.new_page()
-        page.goto(job_url, timeout=60000)
+# Initialize the storage
+storage = AnalysisStorage()
 
-        try:
-            # page.wait_for_selector("aside", timeout=10000)  # Wait for any aside element
-            job_description_element = page.query_selector("aside")  # Select the only aside
-            job_description = job_description_element.inner_text() if job_description_element else ""
-        except:
-            print(f"⚠️ Could not retrieve job details for: {job_url}")
-            job_description = ""
-
-        browser.close()
-        return job_description.strip()
-
-
-def analyze_match_score(job_description, resume):
+def analyze_match_score(job_description, job_qualifications, resume):
     """Uses OpenAI GPT-4o (default) to analyze the job description and compute a match score with justification."""
+
+    qualifications_list = "\n- ".join(job_qualifications) if job_qualifications else "No qualifications provided."
+
     try:
         response = openai.ChatCompletion.create(
             model=OPENAI_API_MODEL,
@@ -64,8 +47,18 @@ def analyze_match_score(job_description, resume):
                 Job Description:
                 {job_description}
 
+                Job Qualifications:
+                {qualifications_list}
+
                 Résumé:
                 {resume}
+
+                *** ASSUMPTIONS ***
+                - be realistic with the score
+                - keep your scope to the provided job description and qualifications
+                - do not make assumptions about the job description or qualifications
+                - do not make assumptions about the résumé
+                - be assertive and objective with your justification analysis
 
                 Respond in the following format:
                 SCORE: <numeric_score>
@@ -97,8 +90,7 @@ def analyze_match_score(job_description, resume):
 
 def process_jobs():
     """Reads jobs without scores, fetches descriptions, computes scores, and updates CSV."""
-    df = load_jobs()
-    jobs_to_score = df[df["score"].isna() | df["score"].isnull()]
+    jobs_to_score = load_jobs()
 
     if jobs_to_score.empty:
         print("✅ All jobs already have scores. No updates needed.")
@@ -107,29 +99,42 @@ def process_jobs():
     print(f"🔍 Found {len(jobs_to_score)} jobs to analyze.")
 
     for index, row in jobs_to_score.iterrows():
-        job_id = row["job_id"]
+        job_id = row["id"]
         job_title = row["title"]
-        job_link = row["link"]
+        job_summary = row["summary"]
+        job_description = row["description"]
+        job_source = row["source"]
+        job_url = row["url"]
+        job_location = row["location"]
+        job_salary_range = row["salary_range"]
+        job_qualifications = row["qualifications"]
+        job_posted_at = row["posted_at"]
 
         print(f"🔹 Processing job: {job_title} ({job_id})")
 
-        # Fetch job description
-        job_description = fetch_job_description(job_link)
-
-        if not job_description:
-            print(f"⚠️ Skipping {job_title} (No job description found).")
-            continue
-
         # Compute match score and analysis
-        score, analysis = analyze_match_score(job_description, resume_content)
+        job_score, job_analysis = analyze_match_score(job_description, job_qualifications, resume_content)
 
-        if score is None:
+        if job_score is None:
             print(f"⚠️ Skipping {job_title} (Failed to compute score).")
             continue
 
-        # Update the job score in job_data.csv
-        update_job_score(job_id, score, analysis)
-        print(f"✅ Updated {job_title} with 🍮 score: {score} and 👀 Analysis {analysis}")
+        # Save the analysis to CSV
+        storage.save_job_analysis(
+            job_id=job_id,
+            job_title=job_title,
+            job_summary=job_summary,
+            job_source=job_source,
+            job_url=job_url,
+            job_location=job_location,
+            job_salary_range=job_salary_range,
+            job_qualifications=job_qualifications,
+            job_posted_at=job_posted_at,
+            match_score=job_score,
+            analysis=job_analysis
+        )
+
+        print(f"✅ Updated {job_title} with 🍮 score: {job_score} and 👀 Analysis {job_analysis}")
 
         # Rate limit to avoid API abuse
         time.sleep(2)
@@ -137,4 +142,5 @@ def process_jobs():
     print("🎯 Job analysis completed!")
 
 # Run the job analysis
-process_jobs()
+if __name__ == "__main__":
+    process_jobs()
