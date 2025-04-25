@@ -51,8 +51,7 @@ def analyze_jobs(api_key: str, model: str, analysis_path: str, resume_path: str,
 
     # Check if resume is empty
     if resume_storage.is_empty():
-        print("❌ ERROR: Resume file is empty. Please add your resume content to the file.")
-        exit(1)
+        raise EmptyResumeError("❌ ERROR: Resume file is empty. Please add your resume content to the file.")
 
     # Define the prompt template
     job_analysis_template = PromptTemplate(
