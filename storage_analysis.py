@@ -4,14 +4,18 @@ from datetime import datetime
 import os
 
 class AnalysisStorage:
-    def __init__(self, csv_path: str = "data/analysis.csv"):
-        self.csv_path = csv_path
+    """Storage for job analysis data."""
+
+    def __init__(self, data_folder: str = "./data", file_name: str = "job_analysis.csv"):
+        """Initialize the AnalysisStorage with a path to the job analysis CSV file."""
+        self.csv_path = os.path.join(data_folder, file_name)
+        self.data_folder = data_folder
         self._ensure_csv_exists()
 
     def _ensure_csv_exists(self):
         """Create the CSV file with headers if it doesn't exist."""
-        if not os.path.exists("data"):
-            os.makedirs("data")
+        if not os.path.exists(self.data_folder):
+            os.makedirs(self.data_folder)
             
         if not os.path.exists(self.csv_path):
             # Create empty DataFrame with all necessary columns
