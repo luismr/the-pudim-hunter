@@ -169,8 +169,12 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) f
 
 ## Acknowledgments
 
-- OpenAI for providing the GPT models
-- Playwright for web automation
-- Pandas for data management
+- [OpenAI](https://openai.com/) for providing the GPT models
+- [Playwright](https://playwright.dev/) for web automation
+- [Pandas](https://pandas.pydata.org/) for data management
+- [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/) for HTML parsing
+- [pudim-hunter-driver](https://github.com/luismr/pudim-hunter-driver) for the core driver interface
+- [pudim-hunter-driver-scraper](https://github.com/luismr/pudim-hunter-driver-scraper) for web scraping utilities
+- [pudim-hunter-driver-simply-hired](https://github.com/luismr/pudim-hunter-driver-simply-hired) for SimplyHired job board implementation
 
 *Automate your job search smarter with The Pudim Hunter 🍮!*
